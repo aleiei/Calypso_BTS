@@ -5,7 +5,7 @@ SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
 
 printf '\033[30;41m\nInstalling CalypsoBTS + osmo-nitb\n\033[0m\n'
 
-sudo apt install osmo-ggsn osmo-sgsn osmo-pcu libfftw3-dev libsofia-sip-ua-glib-dev asterisk sqlite3 telnet python3-pip -y
+sudo apt install osmo-ggsn osmo-sgsn osmo-pcu libfftw3-dev libsofia-sip-ua-glib-dev asterisk sqlite3 telnet python3-pip libtool autoconf -y
 sudo pip3 install smpplib
 
 if [ ! -d "$SCRIPT_DIR/libosmo-dsp" ]; then
@@ -24,11 +24,22 @@ sudo cp -r "$SCRIPT_DIR/auto" /usr/src
 
 cd /usr/src/CalypsoBTS
 sudo dpkg -i *.deb
+sudo apt install -f -y
 sudo ldconfig
 
 cd /usr/src/osmo-nitb
 sudo cp services/osmo-nitb.service /lib/systemd/system
 sudo cp services/osmo-bts-trx.service /lib/systemd/system
+ sysclock_gui Public
+￼
+￼
+Sysclock is a desktop application with a graphical user interface (GUI) written entirely in **Python 3** using the built-in **tkinter** library. It allows easy, visual management of the system cloc…
+
+ Python  2
+
+ ESP32-BUG-I2S-MIC Public
+￼
+Simple project for live audio streaming and recording from an I2S MEMS microphone (INMP441) ov
 sudo cp services/osmo-trx-lms.service /lib/systemd/system
 sudo cp services/osmo-pcu.service /lib/systemd/system
 sudo cp services/osmo-sgsn.service /lib/systemd/system
