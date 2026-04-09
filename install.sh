@@ -30,16 +30,6 @@ sudo ldconfig
 cd /usr/src/osmo-nitb
 sudo cp services/osmo-nitb.service /lib/systemd/system
 sudo cp services/osmo-bts-trx.service /lib/systemd/system
- sysclock_gui Public
-￼
-￼
-Sysclock is a desktop application with a graphical user interface (GUI) written entirely in **Python 3** using the built-in **tkinter** library. It allows easy, visual management of the system cloc…
-
- Python  2
-
- ESP32-BUG-I2S-MIC Public
-￼
-Simple project for live audio streaming and recording from an I2S MEMS microphone (INMP441) ov
 sudo cp services/osmo-trx-lms.service /lib/systemd/system
 sudo cp services/osmo-pcu.service /lib/systemd/system
 sudo cp services/osmo-sgsn.service /lib/systemd/system
