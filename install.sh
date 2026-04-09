@@ -3,10 +3,11 @@ set -e
 
 SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
 LIBOSMO_DSP_DIR="$SCRIPT_DIR/libosmo-dsp"
+LIBOSMOCORE_DIR="$SCRIPT_DIR/libosmocore"
 
 printf '\033[30;41m\nInstalling CalypsoBTS + osmo-nitb\n\033[0m\n'
 
-sudo apt install osmo-ggsn osmo-sgsn osmo-pcu libfftw3-dev libsofia-sip-ua-glib-dev asterisk sqlite3 telnet python3-pip python3-tk libtool autoconf -y
+sudo apt install osmo-ggsn osmo-sgsn osmo-pcu libfftw3-dev libsofia-sip-ua-glib-dev asterisk sqlite3 telnet python3-pip python3-tk libtool autoconf automake pkg-config build-essential libtalloc-dev -y
 sudo pip3 install smpplib
 
 if ! python3 -c "import tkinter" >/dev/null 2>&1; then
@@ -45,6 +46,20 @@ fi
 make
 sudo make install
 
+if ! ldconfig -p | grep -q "libosmocoding.so.0" || ! ldconfig -p | grep -q "libosmocodec.so.0"; then
+	printf '\033[33m\nlibosmocore runtime libs not found, building libosmocore...\n\033[0m\n'
+
+	if [ ! -d "$LIBOSMOCORE_DIR" ]; then
+		git clone https://gitea.osmocom.org/osmocom/libosmocore.git "$LIBOSMOCORE_DIR"
+	fi
+
+	cd "$LIBOSMOCORE_DIR"
+	autoreconf -i -f
+	./configure --prefix=/usr/local
+	make
+	sudo make install
+fi
+
 sudo cp -r "$SCRIPT_DIR/CalypsoBTS" /usr/src
 sudo cp -r "$SCRIPT_DIR/osmo-nitb" /usr/src
 sudo cp -r "$SCRIPT_DIR/auto" /usr/src
@@ -52,7 +67,22 @@ sudo cp -r "$SCRIPT_DIR/auto" /usr/src
 cd /usr/src/CalypsoBTS
 sudo dpkg -i *.deb
 sudo apt install -f -y
+
+ARCH_LIBDIR="$(dpkg-architecture -qDEB_HOST_MULTIARCH 2>/dev/null || true)"
+echo "/usr/local/lib" | sudo tee /etc/ld.so.conf.d/local-lib.conf >/dev/null
+if [ -n "$ARCH_LIBDIR" ]; then
+	echo "/usr/local/lib/$ARCH_LIBDIR" | sudo tee /etc/ld.so.conf.d/local-lib-$ARCH_LIBDIR.conf >/dev/null
+fi
+
 sudo ldconfig
+
+if command -v osmo-bts-trx >/dev/null 2>&1; then
+	if ldd "$(command -v osmo-bts-trx)" | grep -Eq "libosmocoding\.so\.0 => not found|libosmocodec\.so\.0 => not found"; then
+		echo "ERROR: osmo-bts-trx is missing runtime libraries (libosmocoding.so.0/libosmocodec.so.0)." >&2
+		echo "Run: ldconfig -p | grep -E 'libosmocoding|libosmocodec'" >&2
+		exit 1
+	fi
+fi
 
 cd /usr/src/osmo-nitb
 sudo cp services/osmo-nitb.service /lib/systemd/system
