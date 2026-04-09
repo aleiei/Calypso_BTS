@@ -93,7 +93,27 @@ def click_button9():
     msg_entry.pack(padx=15)
     msg_entry.focus_set()
 
+    def ensure_sms_sender_111():
+        # Ensure sender extension 111 exists in HLR so VTY SMS command can use it.
+        sender_imsi = "999999999999999"
+        try:
+            tn = telnetlib.Telnet("127.0.0.1", 4242, timeout=5)
+            tn.read_until(b"OpenBSC", timeout=3)
+            tn.write(f"subscriber create imsi {sender_imsi}\n".encode())
+            tn.read_until(b"OpenBSC", timeout=3)
+            tn.write(f"subscriber imsi {sender_imsi} extension 111\n".encode())
+            tn.read_until(b"OpenBSC", timeout=3)
+            tn.close()
+            return True, ""
+        except Exception as e:
+            return False, str(e)
+
     def send(event=None):
+        ok_sender, sender_err = ensure_sms_sender_111()
+        if not ok_sender:
+            messagebox.showerror(title='Errore SMS', message=f'Impossibile creare sender 111:\n{sender_err}')
+            return
+
         selected = [(rows[i][0], rows[i][2]) for i, v in enumerate(check_vars) if v.get()]
         if not selected:
             messagebox.showwarning(title='SMS', message='Seleziona almeno un destinatario.')
