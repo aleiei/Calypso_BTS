@@ -4,7 +4,7 @@
 
 ![WARNING](https://img.shields.io/badge/WARNING-Legal%20Notice-red?style=for-the-badge)
 
-**Warning:** This software was designed for educational and research purposes on GSM network security, including vulnerability assessment. The author assumes no responsibility for illegal use, including but not limited to unauthorized interception, IMSI-catcher activities, or any operation not permitted by applicable law.
+Warning: this software is intended for education and security research on GSM networks. The author is not responsible for illegal use, including unauthorized interception, IMSI-catcher activity, or any operation forbidden by local law.
 
 ### Overview
 This project sets up a GSM base station on Raspberry Pi using CalypsoBTS, Osmocom components, and a local Tkinter GUI.
@@ -26,13 +26,12 @@ sudo sh install.sh
 
 The installer:
 - installs system and Python dependencies
-- builds and installs libosmo-dsp
+- builds and installs libosmo-dsp and required runtime libraries
 - copies components to /usr/src/CalypsoBTS, /usr/src/osmo-nitb, and /usr/src/auto
 - installs .deb packages from /usr/src/CalypsoBTS
 - copies service files to /lib/systemd/system
-- removes leftover .deb and .service files in /usr/src to avoid redundancy
 
-### Start
+### Start With GUI
 After installation, start the GUI:
 
 ```bash
@@ -40,15 +39,31 @@ cd /usr/src/auto
 sudo python3 auto.py
 ```
 
-Recommended run order in the GUI:
+Recommended sequence in GUI:
 - TRX1 (and TRX2 if using two phones)
 - Clock
-- DB
+- Database
 - BTS
 
-### ARFCN change (Clock)
-When using auto.py, do not edit the osmo-trx-lms systemd service.
-Configuration is driven by the scripts and files opened/used by auto.py:
+### Manual BTS Startup
+If you want to start the stack manually, run the commands in this exact order.
+
+Replace ARFCN with your channel number (for example 62, 75, 124).
+
+```bash
+sudo /usr/src/CalypsoBTS/osmocon -m c123xor -p /dev/ttyUSB0 -s /tmp/osmocom_l2 -c /usr/src/CalypsoBTS/firmwares/compal_e88/trx.highram.bin
+sudo /usr/src/CalypsoBTS/transceiver -e 1 -a ARFCN -r99
+sudo osmo-nitb --yes-i-really-want-to-run-prehistoric-software -c /usr/src/CalypsoBTS/openbsc.cfg -l /usr/src/CalypsoBTS/hlr.sqlite3 -P -C
+sudo osmo-bts-trx -c /usr/src/CalypsoBTS/osmo-bts-trx-calypso.cfg -d DRSL:DOML:DLAPDM
+```
+
+Notes:
+- Keep one terminal per process.
+- Start the next command only after the previous one is running correctly.
+- NITB and BTS settings are in openbsc.cfg and osmo-bts-trx-calypso.cfg.
+
+### ARFCN And Config Files
+When using auto.py, configure parameters in:
 
 ```bash
 sudo nano /usr/src/auto/transceiver.sh
@@ -56,34 +71,29 @@ sudo nano /usr/src/CalypsoBTS/openbsc.cfg
 sudo nano /usr/src/CalypsoBTS/osmo-bts-trx-calypso.cfg
 ```
 
-Notes:
-- ARFCN (Clock) must be edited manually in /usr/src/auto/transceiver.sh (option -a of transceiver).
-- NITB and BTS parameters are in /usr/src/CalypsoBTS/openbsc.cfg and /usr/src/CalypsoBTS/osmo-bts-trx-calypso.cfg.
-- These two cfg files are directly opened/editable from auto.py GUI using OpenBSC.cfg and OsmoBTS.cfg buttons.
-
 ### Notes
 - The installer requires sudo privileges.
-- After automatic cleanup, service templates are not kept in /usr/src/osmo-nitb/services.
+- If osmo-bts-trx reports missing libosmocoding/libosmocodec, rerun install.sh and then run sudo ldconfig.
 
 ## Italiano
 
-![AVVERTENZA](https://img.shields.io/badge/AVVERTENZA-Nota%20Legale-red?style=for-the-badge)
+![AVVISO](https://img.shields.io/badge/AVVISO-Nota%20Legale-red?style=for-the-badge)
 
-**Avvertenza:** Questo software e stato concepito per finalita di studio e ricerca sulla sicurezza delle reti GSM, inclusa la verifica delle vulnerabilita. L'autore non si assume alcuna responsabilita per utilizzi illeciti, incluse, a titolo esemplificativo, intercettazioni non autorizzate, attivita di IMSI catcher o qualsiasi uso non consentito dalla normativa vigente.
+Avviso: questo software e pensato per studio e ricerca sulla sicurezza delle reti GSM. L'autore non e responsabile per usi illeciti, incluse intercettazioni non autorizzate, attivita IMSI-catcher o qualsiasi uso vietato dalla normativa locale.
 
 ### Panoramica
-Questo progetto configura una base station GSM su Raspberry Pi usando CalypsoBTS, Osmocom e una GUI locale in Tkinter.
+Questo progetto configura una BTS GSM su Raspberry Pi usando CalypsoBTS, componenti Osmocom e una GUI locale in Tkinter.
 
 ### Requisiti
 - Raspberry Pi (consigliato Raspberry Pi 3 o superiore)
-- Linux Debian/Ubuntu (Ubuntu Mate 22.04.5 LTS 64-bit consigliato)
-- Telefoni compatibili OsmocomBB (es. Motorola C123/C121/C118)
+- Linux Debian/Ubuntu (consigliato Ubuntu Mate 22.04.5 LTS 64-bit)
+- Telefoni compatibili OsmocomBB (esempio Motorola C123/C121/C118)
 - Adattatore USB-TTL CP2102
 
 ### Installazione
 1. Clona il repository.
 2. Entra nella cartella del progetto.
-3. Avvia lo script di installazione:
+3. Esegui lo script di installazione:
 
 ```bash
 sudo sh install.sh
@@ -91,13 +101,12 @@ sudo sh install.sh
 
 Lo script:
 - installa dipendenze di sistema e Python
-- compila e installa libosmo-dsp
+- compila e installa libosmo-dsp e librerie runtime richieste
 - copia i componenti in /usr/src/CalypsoBTS, /usr/src/osmo-nitb e /usr/src/auto
 - installa i pacchetti .deb da /usr/src/CalypsoBTS
 - copia i file service in /lib/systemd/system
-- rimuove i .deb e i file .service residui in /usr/src per ridurre ridondanze
 
-### Avvio
+### Avvio Con GUI
 Dopo l'installazione, avvia la GUI:
 
 ```bash
@@ -105,15 +114,31 @@ cd /usr/src/auto
 sudo python3 auto.py
 ```
 
-Sequenza operativa consigliata nella GUI:
+Sequenza consigliata nella GUI:
 - TRX1 (e TRX2 se usi due telefoni)
 - Clock
-- DB
+- Database
 - BTS
 
-### Modifica ARFCN (Clock)
-Quando usi auto.py, non devi modificare il servizio systemd osmo-trx-lms.
-La configurazione passa dagli script e dai file aperti/usati da auto.py:
+### Avvio Manuale BTS
+Se vuoi avviare tutto manualmente, esegui i comandi in questo ordine esatto.
+
+Sostituisci ARFCN con il canale desiderato (ad esempio 62, 75, 124).
+
+```bash
+sudo /usr/src/CalypsoBTS/osmocon -m c123xor -p /dev/ttyUSB0 -s /tmp/osmocom_l2 -c /usr/src/CalypsoBTS/firmwares/compal_e88/trx.highram.bin
+sudo /usr/src/CalypsoBTS/transceiver -e 1 -a ARFCN -r99
+sudo osmo-nitb --yes-i-really-want-to-run-prehistoric-software -c /usr/src/CalypsoBTS/openbsc.cfg -l /usr/src/CalypsoBTS/hlr.sqlite3 -P -C
+sudo osmo-bts-trx -c /usr/src/CalypsoBTS/osmo-bts-trx-calypso.cfg -d DRSL:DOML:DLAPDM
+```
+
+Note:
+- Usa un terminale separato per ogni processo.
+- Avvia il comando successivo solo quando il precedente e in esecuzione correttamente.
+- Le impostazioni NITB e BTS sono in openbsc.cfg e osmo-bts-trx-calypso.cfg.
+
+### ARFCN E File Di Configurazione
+Quando usi auto.py, modifica i parametri qui:
 
 ```bash
 sudo nano /usr/src/auto/transceiver.sh
@@ -121,14 +146,9 @@ sudo nano /usr/src/CalypsoBTS/openbsc.cfg
 sudo nano /usr/src/CalypsoBTS/osmo-bts-trx-calypso.cfg
 ```
 
-Note:
-- ARFCN (Clock) va impostato manualmente in /usr/src/auto/transceiver.sh (opzione -a del comando transceiver).
-- I parametri NITB e BTS sono in /usr/src/CalypsoBTS/openbsc.cfg e /usr/src/CalypsoBTS/osmo-bts-trx-calypso.cfg.
-- Questi due file cfg sono apribili/modificabili direttamente dalla GUI di auto.py con i pulsanti OpenBSC.cfg e OsmoBTS.cfg.
-
 ### Note
-- Lo script di installazione usa sudo e richiede privilegi amministrativi.
-- Dopo la pulizia automatica, i template service non restano in /usr/src/osmo-nitb/services.
+- Lo script di installazione richiede privilegi sudo.
+- Se osmo-bts-trx segnala librerie mancanti libosmocoding/libosmocodec, riesegui install.sh e poi sudo ldconfig.
 
 ## License
 
