@@ -14,15 +14,16 @@ if [ ! -d "$LIBOSMO_DSP_DIR" ]; then
 fi
 
 cd "$LIBOSMO_DSP_DIR"
-libtoolize --force --copy
-autoreconf -i -f
+if ! autoreconf -i -f; then
+	if [ -f "$LIBOSMO_DSP_DIR/../ltmain.sh" ] && [ ! -f "$LIBOSMO_DSP_DIR/ltmain.sh" ]; then
+		cp -f "$LIBOSMO_DSP_DIR/../ltmain.sh" "$LIBOSMO_DSP_DIR/ltmain.sh"
+	fi
 
-if [ -f "$SCRIPT_DIR/ltmain.sh" ]; then
-	mv -f "$SCRIPT_DIR/ltmain.sh" "$LIBOSMO_DSP_DIR/ltmain.sh"
-fi
+	if [ ! -f "$LIBOSMO_DSP_DIR/ltmain.sh" ] && [ -f "$LIBOSMO_DSP_DIR/build-aux/ltmain.sh" ]; then
+		cp -f "$LIBOSMO_DSP_DIR/build-aux/ltmain.sh" "$LIBOSMO_DSP_DIR/ltmain.sh"
+	fi
 
-if [ ! -f "$LIBOSMO_DSP_DIR/ltmain.sh" ] && [ -f "$LIBOSMO_DSP_DIR/build-aux/ltmain.sh" ]; then
-	cp -f "$LIBOSMO_DSP_DIR/build-aux/ltmain.sh" "$LIBOSMO_DSP_DIR/ltmain.sh"
+	autoreconf -i -f
 fi
 
 if [ ! -f "$LIBOSMO_DSP_DIR/ltmain.sh" ]; then
