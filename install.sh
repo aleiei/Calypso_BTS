@@ -13,13 +13,24 @@ if [ ! -d "$LIBOSMO_DSP_DIR" ]; then
 	git clone https://gitea.osmocom.org/sdr/libosmo-dsp.git "$LIBOSMO_DSP_DIR"
 fi
 
-autoreconf -i -f "$LIBOSMO_DSP_DIR"
+cd "$LIBOSMO_DSP_DIR"
+libtoolize --force --copy
+autoreconf -i -f
 
-if [ -f "$SCRIPT_DIR/ltmain.sh" ] && [ ! -f "$LIBOSMO_DSP_DIR/ltmain.sh" ]; then
-	mv "$SCRIPT_DIR/ltmain.sh" "$LIBOSMO_DSP_DIR/ltmain.sh"
+if [ -f "$SCRIPT_DIR/ltmain.sh" ]; then
+	mv -f "$SCRIPT_DIR/ltmain.sh" "$LIBOSMO_DSP_DIR/ltmain.sh"
 fi
 
-cd "$LIBOSMO_DSP_DIR"
+if [ ! -f "$LIBOSMO_DSP_DIR/ltmain.sh" ] && [ -f "$LIBOSMO_DSP_DIR/build-aux/ltmain.sh" ]; then
+	cp -f "$LIBOSMO_DSP_DIR/build-aux/ltmain.sh" "$LIBOSMO_DSP_DIR/ltmain.sh"
+fi
+
+if [ ! -f "$LIBOSMO_DSP_DIR/ltmain.sh" ]; then
+	echo "ERROR: ltmain.sh non trovato in $LIBOSMO_DSP_DIR (neanche in build-aux)." >&2
+	echo "Controlla i pacchetti autotools/libtool installati e riesegui." >&2
+	exit 1
+fi
+
 ./configure
 make
 sudo make install
