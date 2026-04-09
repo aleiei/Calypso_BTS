@@ -2,18 +2,24 @@
 set -e
 
 SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
+LIBOSMO_DSP_DIR="$SCRIPT_DIR/libosmo-dsp"
 
 printf '\033[30;41m\nInstalling CalypsoBTS + osmo-nitb\n\033[0m\n'
 
 sudo apt install osmo-ggsn osmo-sgsn osmo-pcu libfftw3-dev libsofia-sip-ua-glib-dev asterisk sqlite3 telnet python3-pip libtool autoconf -y
 sudo pip3 install smpplib
 
-if [ ! -d "$SCRIPT_DIR/libosmo-dsp" ]; then
-	git clone https://gitea.osmocom.org/sdr/libosmo-dsp.git "$SCRIPT_DIR/libosmo-dsp"
+if [ ! -d "$LIBOSMO_DSP_DIR" ]; then
+	git clone https://gitea.osmocom.org/sdr/libosmo-dsp.git "$LIBOSMO_DSP_DIR"
 fi
 
-cd "$SCRIPT_DIR/libosmo-dsp"
-autoreconf -i -f
+autoreconf -i -f "$LIBOSMO_DSP_DIR"
+
+if [ -f "$SCRIPT_DIR/ltmain.sh" ] && [ ! -f "$LIBOSMO_DSP_DIR/ltmain.sh" ]; then
+	mv "$SCRIPT_DIR/ltmain.sh" "$LIBOSMO_DSP_DIR/ltmain.sh"
+fi
+
+cd "$LIBOSMO_DSP_DIR"
 ./configure
 make
 sudo make install
