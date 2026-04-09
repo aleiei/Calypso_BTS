@@ -1,0 +1,11 @@
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Byte-compiled / optimized / DLL files
+*.pyo
+*.pyd
+
+# Editor/OS noise
+.DS_Store
+Thumbs.db
