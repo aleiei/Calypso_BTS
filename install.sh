@@ -36,13 +36,10 @@ sudo cp services/osmo-ggsn.service /lib/systemd/system
 sudo cp services/osmo-sip-connector.service /lib/systemd/system
 sudo systemctl daemon-reload
 
-# Pulizia ridondanze: i file sono gia installati in /lib/systemd/system
 sudo rm -f /usr/src/osmo-nitb/services/*.service
 
-# Pulizia ridondanze: i pacchetti .deb sono gia installati
 sudo rm -f /usr/src/CalypsoBTS/*.deb /usr/src/osmo-nitb/*.deb
 
-# Richiesto: permessi di esecuzione su tutti i file copiati in /usr/src
 sudo find /usr/src/CalypsoBTS /usr/src/osmo-nitb /usr/src/auto -type f -exec chmod +x {} \;
 
 printf '\033[32m\nDone !\n\033[0m\n'
