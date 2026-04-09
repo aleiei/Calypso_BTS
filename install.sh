@@ -7,7 +7,13 @@ LIBOSMOCORE_DIR="$SCRIPT_DIR/libosmocore"
 
 printf '\033[30;41m\nInstalling CalypsoBTS + osmo-nitb\n\033[0m\n'
 
-sudo apt install osmo-ggsn osmo-sgsn osmo-pcu libfftw3-dev libsofia-sip-ua-glib-dev asterisk sqlite3 telnet python3-pip python3-tk libtool autoconf automake pkg-config build-essential libtalloc-dev -y
+sudo apt install osmo-ggsn osmo-sgsn osmo-pcu libfftw3-dev libsofia-sip-ua-glib-dev asterisk sqlite3 telnet python3-pip python3-tk libtool autoconf automake pkg-config build-essential libtalloc-dev liburing-dev libpcsclite-dev libusb-1.0-0-dev libmnl-dev libsctp-dev -y
+
+if ! dpkg -s gnutls-dev >/dev/null 2>&1; then
+	if ! dpkg -s libgnutls28-dev >/dev/null 2>&1; then
+		sudo apt install -y gnutls-dev || sudo apt install -y libgnutls28-dev
+	fi
+fi
 sudo pip3 install smpplib
 
 if ! python3 -c "import tkinter" >/dev/null 2>&1; then
