@@ -2,6 +2,8 @@
 
 ## English
 
+<p style="color:#c00000;"><strong>Warning:</strong> This software was designed for educational and research purposes on GSM network security, including vulnerability assessment. The author assumes no responsibility for illegal use, including but not limited to unauthorized interception, IMSI-catcher activities, or any operation not permitted by applicable law.</p>
+
 ### Overview
 This project sets up a GSM base station on Raspberry Pi using CalypsoBTS, Osmocom components, and a local Tkinter GUI.
 
@@ -62,6 +64,8 @@ Notes:
 - After automatic cleanup, service templates are not kept in /usr/src/osmo-nitb/services.
 
 ## Italiano
+
+<p style="color:#c00000;"><strong>Avvertenza:</strong> Questo software e stato concepito per finalita di studio e ricerca sulla sicurezza delle reti GSM, inclusa la verifica delle vulnerabilita. L'autore non si assume alcuna responsabilita per utilizzi illeciti, incluse, a titolo esemplificativo, intercettazioni non autorizzate, attivita di IMSI catcher o qualsiasi uso non consentito dalla normativa vigente.</p>
 
 ### Panoramica
 Questo progetto configura una base station GSM su Raspberry Pi usando CalypsoBTS, Osmocom e una GUI locale in Tkinter.
