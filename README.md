@@ -9,6 +9,9 @@ Warning: this software is intended for education and security research on GSM ne
 ### Overview
 This project sets up a GSM base station on Raspberry Pi using CalypsoBTS, Osmocom components, and a local Tkinter GUI.
 
+### Project Status
+Tested and validated on a fresh installation of Ubuntu MATE 22.04 Desktop ARM64, running on Raspberry Pi 4 (4 GB RAM).
+
 ### Requirements
 - Raspberry Pi (Raspberry Pi 3+ recommended)
 - Debian/Ubuntu based Linux (Ubuntu Mate 22.04.5 LTS 64-bit recommended)
@@ -106,6 +109,9 @@ Avviso: questo software e pensato per studio e ricerca sulla sicurezza delle ret
 
 ### Panoramica
 Questo progetto configura una BTS GSM su Raspberry Pi usando CalypsoBTS, componenti Osmocom e una GUI locale in Tkinter.
+
+### Stato Progetto
+Collaudato e validato su installazione pulita di Ubuntu MATE 22.04 Desktop ARM64, su Raspberry Pi 4 (4 GB di RAM).
 
 ### Requisiti
 - Raspberry Pi (consigliato Raspberry Pi 3 o superiore)

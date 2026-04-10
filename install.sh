@@ -112,12 +112,6 @@ if ! command -v sudo >/dev/null 2>&1; then
 	fatal "sudo not found. Install sudo and rerun."
 fi
 
-for cmd in git autoreconf make ldconfig dpkg-query dpkg-deb; do
-	if ! command -v "$cmd" >/dev/null 2>&1; then
-		fatal "Required command not found: $cmd"
-	fi
-done
-
 if ! sudo -v; then
 	fatal "Unable to authenticate with sudo."
 fi
@@ -146,6 +140,12 @@ if ! python3 -c "import tkinter" >/dev/null 2>&1; then
 	echo "ERROR: tkinter is not available. Install python3-tk (or python3.10-tk) and run again." >&2
 	exit 1
 fi
+
+for cmd in git autoreconf make ldconfig dpkg-query dpkg-deb; do
+	if ! command -v "$cmd" >/dev/null 2>&1; then
+		fatal "Required command not found: $cmd"
+	fi
+done
 
 if [ ! -d "$LIBOSMO_DSP_DIR" ]; then
 	retry_step "Clone libosmo-dsp" git clone https://gitea.osmocom.org/sdr/libosmo-dsp.git "$LIBOSMO_DSP_DIR"
