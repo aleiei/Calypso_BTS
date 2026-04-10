@@ -16,9 +16,25 @@ This project sets up a GSM base station on Raspberry Pi using CalypsoBTS, Osmoco
 - CP2102 USB-TTL adapter
 
 ### Installation
-1. Clone the repository.
-2. Enter the project directory.
-3. Run the installer:
+1. Install git:
+
+```bash
+sudo apt install git -y
+```
+
+2. Clone the repository:
+
+```bash
+git clone https://github.com/aleiei/Calypso_BTS.git
+```
+
+3. Enter the project directory:
+
+```bash
+cd Calypso_BTS
+```
+
+4. Run the installer:
 
 ```bash
 sudo sh install.sh
@@ -30,6 +46,13 @@ The installer:
 - copies components to /usr/src/CalypsoBTS, /usr/src/osmo-nitb, and /usr/src/auto
 - installs .deb packages from /usr/src/CalypsoBTS
 - copies service files to /lib/systemd/system
+
+### Uninstall
+To remove the BTS installation from the system, run:
+
+```bash
+./uninstall.sh --apply --purge-deps
+```
 
 ### Start With GUI
 After installation, start the GUI:
@@ -91,9 +114,25 @@ Questo progetto configura una BTS GSM su Raspberry Pi usando CalypsoBTS, compone
 - Adattatore USB-TTL CP2102
 
 ### Installazione
-1. Clona il repository.
-2. Entra nella cartella del progetto.
-3. Esegui lo script di installazione:
+1. Installa git:
+
+```bash
+sudo apt install git -y
+```
+
+2. Clona il repository:
+
+```bash
+git clone https://github.com/aleiei/Calypso_BTS.git
+```
+
+3. Entra nella cartella del progetto:
+
+```bash
+cd Calypso_BTS
+```
+
+4. Esegui lo script di installazione:
 
 ```bash
 sudo sh install.sh
@@ -105,6 +144,13 @@ Lo script:
 - copia i componenti in /usr/src/CalypsoBTS, /usr/src/osmo-nitb e /usr/src/auto
 - installa i pacchetti .deb da /usr/src/CalypsoBTS
 - copia i file service in /lib/systemd/system
+
+### Disinstallazione
+Per rimuovere il sistema BTS dalla macchina, esegui:
+
+```bash
+./uninstall.sh --apply --purge-deps
+```
 
 ### Avvio Con GUI
 Dopo l'installazione, avvia la GUI:
